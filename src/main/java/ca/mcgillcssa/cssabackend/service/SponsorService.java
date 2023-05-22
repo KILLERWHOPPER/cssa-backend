@@ -22,9 +22,24 @@ public class SponsorService {
         this.sponsorRepository = sponsorRepository;
     }
 
-    // Create single
-    public Sponsor createSponsor(String sponsorName, String coopDuration, String sponsorImageUrl,
-            String sponsorWebsiteUrl, String sponsorClass) throws IllegalArgumentException, IOException {
+    /**
+     * Creates a new sponsor in the database.
+     * 
+     * @Author Zihan Zhang
+     * @param sponsorName       the name of the sponsor
+     * @param coopDuration      the duration of the coop, should be "QUARTER_YEAR",
+     *                          or "FULL_YEAR"
+     * @param sponsorImageUrl   the image url of the sponsor, should be connectable
+     * @param sponsorWebsiteUrl the website url of the sponsor, should be
+     *                          connectable
+     * @param sponsorClass      the class of the sponsor, should be "PLATINUM",
+     *                          "GOLD", or "SILVER"
+     * @return the saved sponsor object
+     * @throws IllegalArgumentException if any argument is null, empty, or invalid
+     */
+    public Sponsor createSponsor(String sponsorName, String coopDuration,
+            String sponsorImageUrl, String sponsorWebsiteUrl, String sponsorClass)
+            throws IllegalArgumentException, IOException {
         // Null check
         if (sponsorName == null || sponsorName.isEmpty()) {
             throw new IllegalArgumentException("Sponsor name cannot be null or empty");
@@ -90,16 +105,40 @@ public class SponsorService {
         return sponsorRepository.createSponsor(sponsor);
     }
 
-    // Find single
+    /**
+     * Finds a sponsor by its name.
+     * 
+     * @Author Zihan Zhang
+     * @param sponsorName the name of the sponsor
+     * @return the sponsor object
+     * @throws IllegalArgumentException if sponsor name is null or empty
+     */
     public Optional<Sponsor> findSponsorByName(String sponsorName) {
+        if(sponsorName == null || sponsorName.isEmpty()) {
+            throw new IllegalArgumentException("Sponsor name cannot be null or empty");
+        }
         return sponsorRepository.findSponsorByName(sponsorName);
     }
 
-    // Find many
+    /**
+     * Finds all sponsors.
+     * 
+     * @Author Zihan Zhang
+     * @return the list of sponsors
+     */
     public List<Sponsor> findAllSponsors() {
         return sponsorRepository.findAllSponsors();
     }
 
+    /**
+     * Finds sponsors by class.
+     * 
+     * @Author Zihan Zhang
+     * @param sponsorClass the class of the sponsor, should be "PLATINUM", "GOLD",
+     *                     or "SILVER"
+     * @return the list of sponsors
+     * @throws IllegalArgumentException if sponsor class is not valid
+     */
     public List<Sponsor> findSponsorsByClass(String sponsorClass) {
         if (!sponsorClass.equals("PLATINUM") && !sponsorClass.equals("GOLD") && !sponsorClass.equals("SILVER")) {
             throw new IllegalArgumentException("Sponsor class is not valid");
@@ -107,6 +146,15 @@ public class SponsorService {
         return sponsorRepository.findSponsorsByClass(sponsorClass);
     }
 
+    /**
+     * Finds sponsors by coop duration.
+     * 
+     * @Author Zihan Zhang
+     * @param coopDuration the duration of the coop, should be "QUARTER_YEAR", or
+     *                     "FULL_YEAR"
+     * @return the list of sponsors
+     * @throws IllegalArgumentException if coop duration is not valid
+     */
     public List<Sponsor> findSponsorsByCoopDuration(String coopDuration) {
         if (!coopDuration.equals("QUARTER_YEAR") && !coopDuration.equals("FULL_YEAR")) {
             throw new IllegalArgumentException("Coop duration is not valid");
@@ -114,14 +162,34 @@ public class SponsorService {
         return sponsorRepository.findSponsorsByCoopDuration(coopDuration);
     }
 
-    // Delete single
+    /**
+     * Deletes a sponsor by its name.
+     * 
+     * @Author Zihan Zhang
+     * @param sponsorName the name of the sponsor
+     * @return true if deleted
+     */
     public boolean deleteSponsorByName(String sponsorName) {
         return sponsorRepository.deleteSponsorByName(sponsorName);
     }
 
-    // Update single
+    /**
+     * Updates a sponsor.
+     * 
+     * @Author Zihan Zhang
+     * @param sponsorName       the name of the sponsor
+     * @param coopDuration      the duration of the coop, should be "QUARTER_YEAR",
+     *                          or "FULL_YEAR"
+     * @param sponsorImageUrl   the image url of the sponsor, should be connectable
+     * @param sponsorWebsiteUrl the website url of the sponsor, should be
+     *                          connectable
+     * @param sponsorClass      the class of the sponsor, should be "PLATINUM",
+     *                          "GOLD", or "SILVER"
+     * @return true if updated
+     * @throws IllegalArgumentException if any argument is null, empty, or invalid
+     */
     public boolean updateSponsor(String sponsorName, String coopDuration, String sponsorImageUrl,
-            String sponsorWebsiteUrl, String sponsorClass) throws IOException {
+            String sponsorWebsiteUrl, String sponsorClass) throws IllegalArgumentException {
         // object availavility check
         if (!sponsorRepository.findSponsorByName(sponsorName).isPresent()) {
             throw new IllegalArgumentException("Sponsor does not exist");

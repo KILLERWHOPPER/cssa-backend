@@ -48,6 +48,14 @@ public class SponsorController {
         this.sponsorService = memberService;
     }
 
+    /**
+     * Creates a new sponsor in the database.
+     * 
+     * @Author Zihan Zhang
+     * @param requestBody contains sponsor name, coop duration, sponsor image url,
+     *                    sponsor website url, and sponsor class
+     * @return a response containing the saved sponsor object
+     */
     @PostMapping("/")
     public ResponseEntity<?> createSponsor(@RequestBody SponsorRequestBody requestBody) {
         Map<String, Object> response = new HashMap<>();
@@ -63,36 +71,64 @@ public class SponsorController {
             response.put(msgStr, "Failed to create sponsor: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         } catch (DataAccessException | IOException e) {
-            response.put(msgStr, "Failed to create sponsor: " + e.getMessage());
+            // TODO: remove exception message from response after debugging
+            response.put(msgStr, "An error occurred: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
+    /**
+     * Retrieves all sponsors in the database.
+     * 
+     * @Author Zihan Zhang
+     * @return a response containing a list of all sponsors
+     */
     @GetMapping("/")
     public ResponseEntity<?> getAllSponsors() {
         List<Sponsor> sponsors = new ArrayList<>();
         try {
             sponsors = sponsorService.findAllSponsors();
             return ResponseEntity.status(HttpStatus.OK).body(sponsors);
-        } catch (DataAccessException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        } catch (Exception e) {
+            // TODO: remove exception message from response after debugging
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
         }
     }
 
+    /**
+     * Retrieves a sponsor by name.
+     * 
+     * @Author Zihan Zhang
+     * @param sponsorName the name of the sponsor
+     * @return a response containing a sponsor object
+     */
     @GetMapping("/name/{sponsorName}")
     public ResponseEntity<?> getSponsorByName(@PathVariable String sponsorName) {
         Map<String, Object> response = new HashMap<>();
-        Optional<Sponsor> sponsor = sponsorService.findSponsorByName(sponsorName);
-        if (sponsor.isPresent()) {
-            response.put(msgStr, "Sponsor found with name: " + sponsorName);
-            response.put(sponsorStr, new SponsorDTO(sponsor.get()));
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } else {
-            response.put(msgStr, "Sponsor not found with name: " + sponsorName);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        try {
+            Optional<Sponsor> sponsor = sponsorService.findSponsorByName(sponsorName);
+            if (sponsor.isPresent()) {
+                response.put(msgStr, "Sponsor found with name: " + sponsorName);
+                response.put(sponsorStr, new SponsorDTO(sponsor.get()));
+                return ResponseEntity.status(HttpStatus.OK).body(response);
+            } else {
+                response.put(msgStr, "Sponsor not found with name: " + sponsorName);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (IllegalArgumentException e) {
+            response.put(msgStr, "Failed to find sponsor: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
+
     }
 
+    /**
+     * Retrieves a sponsor by coop duration.
+     * 
+     * @Author Zihan Zhang
+     * @param coopDuration the coop duration of the sponsor
+     * @return a response containing a list of sponsor object
+     */
     @GetMapping("/duration/{coopDuration}")
     public ResponseEntity<?> getSponsorByCoopDuration(@PathVariable String coopDuration) {
         Map<String, Object> response = new HashMap<>();
@@ -116,6 +152,13 @@ public class SponsorController {
         }
     }
 
+    /**
+     * Retrieves a sponsor by sponsor class.
+     * 
+     * @Author Zihan Zhang
+     * @param sponsorClass the sponsor class of the sponsor
+     * @return a response containing a list of sponsor object
+     */
     @GetMapping("/class/{sponsorClass}")
     public ResponseEntity<?> getSponsorByClass(@PathVariable String sponsorClass) {
         Map<String, Object> response = new HashMap<>();
@@ -139,6 +182,13 @@ public class SponsorController {
         }
     }
 
+    /**
+     * Deletes a sponsor by name.
+     * 
+     * @Author Zihan Zhang
+     * @param sponsorName the name of the sponsor
+     * @return a response containing a sponsor object if deleted successfully
+     */
     @DeleteMapping("/name/{sponsorName}")
     public ResponseEntity<?> deleteSponsorByName(@PathVariable String sponsorName) {
         Map<String, Object> response = new HashMap<>();
@@ -151,6 +201,15 @@ public class SponsorController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
+
+    /**
+     * Updates a sponsor by name.
+     * 
+     * @Author Zihan Zhang
+     * @param sponsorName the name of the sponsor
+     * @param requestBody the request body, containing the corp duration, sponsor image url, sponsor website url, sponsor class
+     * @return a response containing a sponsor object if updated successfully
+     **/
 
     @PutMapping("/name/{sponsorName}")
     public ResponseEntity<?> updateSponsorByName(@PathVariable String sponsorName,
