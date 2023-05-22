@@ -114,7 +114,7 @@ public class SponsorService {
      * @throws IllegalArgumentException if sponsor name is null or empty
      */
     public Optional<Sponsor> findSponsorByName(String sponsorName) {
-        if(sponsorName == null || sponsorName.isEmpty()) {
+        if (sponsorName == null || sponsorName.isEmpty()) {
             throw new IllegalArgumentException("Sponsor name cannot be null or empty");
         }
         return sponsorRepository.findSponsorByName(sponsorName);

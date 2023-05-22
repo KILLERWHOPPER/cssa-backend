@@ -207,10 +207,10 @@ public class SponsorController {
      * 
      * @Author Zihan Zhang
      * @param sponsorName the name of the sponsor
-     * @param requestBody the request body, containing the corp duration, sponsor image url, sponsor website url, sponsor class
+     * @param requestBody the request body, containing the corp duration, sponsor
+     *                    image url, sponsor website url, sponsor class
      * @return a response containing a sponsor object if updated successfully
-     **/
-
+     */
     @PutMapping("/name/{sponsorName}")
     public ResponseEntity<?> updateSponsorByName(@PathVariable String sponsorName,
             @RequestBody SponsorRequestBody requestBody) throws IOException {
